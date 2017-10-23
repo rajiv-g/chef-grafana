@@ -15,3 +15,4 @@ recipe 'grafana::default', 'Installs and configures Grafana with a web server pr
 depends 'apt'
 depends 'yum'
 depends 'chef_nginx'
+suggests 'chef-vault', '>= 1.3.1'

@@ -105,3 +105,7 @@ default['grafana']['webserver_hostname'] = node.name
 default['grafana']['webserver_aliases'] = [node['ipaddress']]
 default['grafana']['webserver_listen'] = node['ipaddress']
 default['grafana']['webserver_port'] = 80
+
+# Configuration from databag
+default['grafana']['data_bag']['name'] = 'grafana'
+default['grafana']['data_bag']['config_item'] = 'config'
