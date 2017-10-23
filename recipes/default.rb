@@ -75,7 +75,7 @@ ini['paths']['plugins'] = node['grafana']['plugins_dir']
 
 data_bag_name = node['grafana']['data_bag']['name']
 config_item = node['grafana']['data_bag']['config_item']
-grafana_config = data_bag_item(data_bag_name, config_item)
+grafana_config = GrafanaCookbook::IniHelper.data_bag_item(data_bag_name, config_item)
 
 if grafana_config and grafana_config['security']
   ini['security'] ||= {}
