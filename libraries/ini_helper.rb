@@ -40,7 +40,7 @@ module GrafanaCookbook
       end
     end
 
-    def self.data_bag_item(data_bag_name, data_bag_item, missing_ok=false)
+    def self.data_bag_item(data_bag_name, data_bag_item, missing_ok=true)
       raw_hash = Chef::DataBagItem.load(data_bag_name, data_bag_item)
       encrypted = raw_hash.detect do |key, value|
         if value.is_a?(Hash)
