@@ -52,9 +52,17 @@ template ::File.join(node['grafana']['env_dir'], 'grafana-server') do
   notifies :restart, 'service[grafana-server]'
 end
 
+ini_from_attributes = node['grafana']['ini'].dup
+
+data_bag_name = node['grafana']['data_bag']['name']
+config_item = node['grafana']['data_bag']['config_item']
+ini_from_databag = GrafanaCookbook::Helper.data_bag_item(data_bag_name, config_item, missing_ok=true)
+
+merged_ini = Chef::Mixin::DeepMerge.merge(ini_from_attributes, ini_from_databag)
+
 template ::File.join(node['grafana']['conf_dir'], 'grafana.ini') do
   source 'grafana.ini.erb'
-  variables ini: node['grafana']['ini']
+  variables ini: merged_ini
   group node['grafana']['group']
   mode '0644'
   sensitive true
