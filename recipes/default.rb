@@ -52,9 +52,21 @@ template ::File.join(node['grafana']['env_dir'], 'grafana-server') do
   notifies :restart, 'service[grafana-server]'
 end
 
+ini = node['grafana']['ini'].dup
+
+data_bag_name = node['grafana']['data_bag']['name']
+config_item = node['grafana']['data_bag']['config_item']
+ini_from_databag = GrafanaCookbook::Helper.data_bag_item(data_bag_name, config_item, missing_ok=true)
+
+if ini_from_databag and ini_from_databag['security']
+  ini['security'] ||= {}
+  ini['security']['admin_user'] = ini_from_databag['security']['admin_user'] || 'admin'
+  ini['security']['admin_password'] = ini_from_databag['security']['admin_password'] || 'admin'
+end
+
 template ::File.join(node['grafana']['conf_dir'], 'grafana.ini') do
   source 'grafana.ini.erb'
-  variables ini: node['grafana']['ini']
+  variables ini: ini
   group node['grafana']['group']
   mode '0644'
   sensitive true
