@@ -58,7 +58,7 @@ data_bag_name = node['grafana']['data_bag']['name']
 config_item = node['grafana']['data_bag']['config_item']
 ini_from_databag = GrafanaCookbook::Helper.data_bag_item(data_bag_name, config_item, missing_ok=true)
 
-ini = Chef::Mixin::DeepMerge.merge(ini, ini_from_databag["config"])
+ini = Chef::Mixin::DeepMerge.merge(ini, ini_from_databag["config"]) if ini_from_databag
 
 template ::File.join(node['grafana']['conf_dir'], 'grafana.ini') do
   source 'grafana.ini.erb'
