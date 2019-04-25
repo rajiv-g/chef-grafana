@@ -60,7 +60,6 @@ module GrafanaCookbook
     # Params:
     # +grafana_options+:: A hash of the host, port, user, and password as well as request parameters
     def do_request(grafana_options, payload = nil)
-      session_id = login(grafana_options[:host], grafana_options[:port], grafana_options[:user], grafana_options[:password])
       http = Net::HTTP.new(grafana_options[:host], grafana_options[:port])
       request = case grafana_options[:method]
                 when 'Post'
@@ -72,7 +71,8 @@ module GrafanaCookbook
                 else
                   Net::HTTP::Get.new(grafana_options[:endpoint])
                 end
-      request.add_field('Cookie', "grafana_user=#{grafana_options[:user]}; grafana_sess=#{session_id};")
+      # switch to basic auth for grafana 6.x
+      request.basic_auth grafana_options[:user], grafana_options[:password]
       request.add_field('Content-Type', 'application/json;charset=utf-8;')
       request.add_field('Accept', 'application/json')
       request.body = payload if payload
